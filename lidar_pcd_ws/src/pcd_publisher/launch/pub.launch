@@ -1,0 +1,26 @@
+<launch>
+    <!-- PCD文件路径参数 -->
+    <arg name="pcd_file" default="/home/wy114/NavTut/lidar_pcd_ws/src/pcd_publisher/pcd/rmuc_2025.pcd"/>
+    
+    <!-- 点云缩放因子参数 -->
+    <arg name="scale" default="1.0"/>
+    
+    <!-- 旋转校正参数（弧度制） -->
+    <arg name="roll" default="0.5236"/>   <!-- 绕x轴旋转 -->
+    <arg name="pitch" default="0.0"/>  <!-- 绕y轴旋转 -->
+    <arg name="yaw" default="0.0"/>    <!-- 绕z轴旋转 -->
+    
+    <!-- 坐标系参数 -->
+    <arg name="frame_id" default="map"/>
+
+    <!-- 原始点云发布 -->
+    <node pkg="pcd_publisher" type="publish_pcd" name="pcd_publisher" output="screen">
+        <param name="pcd_file_path" value="$(arg pcd_file)"/>
+        <param name="scale" value="$(arg scale)"/>
+        <param name="roll" value="$(arg roll)"/>
+        <param name="pitch" value="$(arg pitch)"/>
+        <param name="yaw" value="$(arg yaw)"/>
+        <param name="frame_id" value="$(arg frame_id)"/>
+    </node>
+
+</launch>

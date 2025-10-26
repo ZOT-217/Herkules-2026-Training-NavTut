@@ -1,0 +1,2 @@
+pcd_publisher
+-DCATKIN_DEVEL_PREFIX=/home/wy114/NavTut/lidar_pcd_ws/devel -DCMAKE_INSTALL_PREFIX=/home/wy114/NavTut/lidar_pcd_ws/install -G Unix Makefiles

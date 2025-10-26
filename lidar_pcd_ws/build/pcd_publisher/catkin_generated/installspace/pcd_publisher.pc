@@ -1,0 +1,8 @@
+prefix=/home/wy114/NavTut/lidar_pcd_ws/install
+
+Name: pcd_publisher
+Description: Description of pcd_publisher
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

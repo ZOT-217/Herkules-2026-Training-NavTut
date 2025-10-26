@@ -1,0 +1,72 @@
+<launch>
+    <!-- PCD文件路径参数 -->
+    <arg name="pcd_file" default="/home/wy114/NavTut/lidar_pcd_ws/src/pcd_publisher/pcd/rmuc_2025.pcd"/>
+    
+    <!-- 体素降采样大小参数 -->
+    <arg name="voxel_size" default="0.1"/>
+
+    <!-- 点云缩放因子参数 -->
+    <arg name="scale" default="1.0"/>
+
+    <!-- 离群点滤波器参数 -->
+    <arg name="mean_k" default="50"/>
+    <arg name="std_dev_thresh" default="1.0"/>
+
+    <!-- 房间滤波参数 -->
+    <arg name="auto_detect_bounds" default="true"/>
+    <arg name="wall_thickness" default="0.3"/>
+    <arg name="floor_clearance" default="0.1"/>
+    <arg name="ceiling_clearance" default="0.3"/>
+
+    <!-- RANSAC聚类参数 -->
+    <arg name="plane_distance_thresh" default="1.0"/>       <!-- 进一步降低距离阈值 -->
+    <arg name="plane_max_iterations" default="1000"/>
+    <arg name="min_plane_points" default="1000"/>           <!-- 进一步增加最小点数要求 -->
+    <arg name="max_planes" default="3"/>                    <!-- 减少平面数量 -->
+    <arg name="cluster_tolerance" default="30.0"/>          <!-- 降低聚类容忍度 -->
+    <arg name="min_cluster_size" default="30"/>             <!-- 降低最小聚类大小 -->
+    <arg name="max_cluster_size" default="3000"/>
+
+    <!-- 原始点云发布 -->
+    <node pkg="pcd_publisher" type="publish_pcd" name="pcd_publisher" output="screen">
+        <param name="pcd_file_path" value="$(arg pcd_file)"/>
+        <param name="scale" value="$(arg scale)"/>
+    </node>
+
+    <!-- 点云降采样 -->
+    <node pkg="pcd_publisher" type="pcd_downsample" name="pcd_downsample" output="screen">
+        <param name="voxel_size" value="$(arg voxel_size)"/>
+    </node>
+
+    <!-- 离群点滤波 -->
+    <node pkg="pcd_publisher" type="outlier_filter" name="outlier_filter" output="screen">
+        <param name="mean_k" value="$(arg mean_k)"/>
+        <param name="std_dev_thresh" value="$(arg std_dev_thresh)"/>
+    </node>
+
+    <!-- 房间结构滤波 -->
+    <node pkg="pcd_publisher" type="room_structure_filter" name="room_structure_filter" output="screen">
+        <param name="auto_detect_bounds" value="$(arg auto_detect_bounds)"/>
+        <param name="wall_thickness" value="$(arg wall_thickness)"/>
+        <param name="floor_clearance" value="$(arg floor_clearance)"/>
+        <param name="ceiling_clearance" value="$(arg ceiling_clearance)"/>
+    </node>
+
+    <!-- 平面RANSAC聚类 -->
+    <node pkg="pcd_publisher" type="plane_ransac_clusterer" name="plane_ransac_clusterer" output="screen">
+        <param name="point_cloud_scale" value="$(arg scale)"/>
+        <param name="plane_distance_thresh" value="$(arg plane_distance_thresh)"/>
+        <param name="plane_max_iterations" value="$(arg plane_max_iterations)"/>
+        <param name="min_plane_points" value="$(arg min_plane_points)"/>
+        <param name="max_planes" value="$(arg max_planes)"/>
+        <param name="cluster_tolerance" value="$(arg cluster_tolerance)"/>
+        <param name="min_cluster_size" value="$(arg min_cluster_size)"/>
+        <param name="max_cluster_size" value="$(arg max_cluster_size)"/>
+        <param name="horizontal_angle_thresh" value="15.0"/>
+        <param name="vertical_angle_thresh" value="15.0"/>
+        <param name="floor_height_thresh" value="500.0"/>      <!-- 0.5m * 1000 -->
+        <param name="table_height_min" value="500.0"/>         <!-- 0.5m * 1000 -->
+        <param name="table_height_max" value="1200.0"/>        <!-- 1.2m * 1000 -->
+        <param name="min_plane_area" value="200000.0"/>        <!-- 适应缩放的最小面积 -->
+    </node>
+</launch>

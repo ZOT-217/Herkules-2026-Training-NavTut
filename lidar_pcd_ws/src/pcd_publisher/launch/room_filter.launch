@@ -1,0 +1,69 @@
+<launch>
+    <!-- PCD文件路径参数 -->
+    <arg name="pcd_file" default="/home/wy114/NavTut/lidar_pcd_ws/src/pcd_publisher/pcd/rmuc_2025.pcd"/>
+    
+    <!-- 体素降采样大小参数 -->
+    <arg name="voxel_size" default="0.1"/>
+
+    <!-- 点云缩放因子参数 -->
+    <arg name="scale" default="1.0"/>
+
+    <!-- 离群点滤波器参数 -->
+    <arg name="mean_k" default="50"/>
+    <arg name="std_dev_thresh" default="1.0"/>
+
+    <!-- 旋转校正参数（弧度制） -->
+    <arg name="roll" default="0.5236"/>   <!-- 绕x轴旋转 -->
+    <arg name="pitch" default="0.0"/>  <!-- 绕y轴旋转 -->
+    <arg name="yaw" default="0.0"/>    <!-- 绕z轴旋转 -->
+
+    <!-- 坐标系参数 -->
+    <arg name="frame_id" default="map"/>
+
+    <!-- 房间滤波参数 -->
+    <arg name="auto_detect_bounds" default="true"/>  <!-- 是否自动检测边界 -->
+    <arg name="x_min" default="-5.0"/>
+    <arg name="x_max" default="5.0"/>
+    <arg name="y_min" default="-5.0"/>
+    <arg name="y_max" default="5.0"/>
+    <arg name="z_min" default="0.2"/>    <!-- 地板高度，根据实际调整 -->
+    <arg name="z_max" default="2.5"/>    <!-- 天花板高度，根据实际调整 -->
+    <arg name="wall_thickness" default="0.3"/>
+    <arg name="floor_clearance" default="0.1"/>     <!-- 地板清除高度 -->
+    <arg name="ceiling_clearance" default="0.3"/>   <!-- 天花板清除高度 -->
+
+    <!-- 原始点云发布 -->
+    <node pkg="pcd_publisher" type="publish_pcd" name="pcd_publisher" output="screen">
+        <param name="pcd_file_path" value="$(arg pcd_file)"/>
+        <param name="scale" value="$(arg scale)"/>
+        <param name="roll" value="$(arg roll)"/>
+        <param name="pitch" value="$(arg pitch)"/>
+        <param name="yaw" value="$(arg yaw)"/>
+        <param name="frame_id" value="$(arg frame_id)"/>
+    </node>
+
+    <!-- 点云降采样 -->
+    <node pkg="pcd_publisher" type="pcd_downsample" name="pcd_downsample" output="screen">
+        <param name="voxel_size" value="$(arg voxel_size)"/>
+    </node>
+
+    <!-- 离群点滤波 -->
+    <node pkg="pcd_publisher" type="outlier_filter" name="outlier_filter" output="screen">
+        <param name="mean_k" value="$(arg mean_k)"/>
+        <param name="std_dev_thresh" value="$(arg std_dev_thresh)"/>
+    </node>
+
+    <!-- 房间结构滤波 -->
+    <node pkg="pcd_publisher" type="room_structure_filter" name="room_structure_filter" output="screen">
+        <param name="auto_detect_bounds" value="$(arg auto_detect_bounds)"/>
+        <param name="x_min" value="$(arg x_min)"/>
+        <param name="x_max" value="$(arg x_max)"/>
+        <param name="y_min" value="$(arg y_min)"/>
+        <param name="y_max" value="$(arg y_max)"/>
+        <param name="z_min" value="$(arg z_min)"/>
+        <param name="z_max" value="$(arg z_max)"/>
+        <param name="wall_thickness" value="$(arg wall_thickness)"/>
+        <param name="floor_clearance" value="$(arg floor_clearance)"/>
+        <param name="ceiling_clearance" value="$(arg ceiling_clearance)"/>
+    </node>
+</launch>
