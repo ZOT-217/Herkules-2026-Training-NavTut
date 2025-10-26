@@ -7,6 +7,14 @@
 
     <!-- 点云缩放因子参数 -->
     <arg name="scale" default="1.0"/>
+    
+    <!-- 旋转校正参数（弧度制） -->
+    <arg name="roll" default="0.5236"/>   <!-- 绕x轴旋转 -->
+    <arg name="pitch" default="0.0"/>  <!-- 绕y轴旋转 -->
+    <arg name="yaw" default="0.0"/>    <!-- 绕z轴旋转 -->
+
+    <!-- 坐标系参数 -->
+    <arg name="frame_id" default="map"/>
 
     <!-- 离群点滤波器参数 -->
     <arg name="mean_k" default="50"/>
@@ -31,6 +39,10 @@
     <node pkg="pcd_publisher" type="publish_pcd" name="pcd_publisher" output="screen">
         <param name="pcd_file_path" value="$(arg pcd_file)"/>
         <param name="scale" value="$(arg scale)"/>
+        <param name="roll" value="$(arg roll)"/>
+        <param name="pitch" value="$(arg pitch)"/>
+        <param name="yaw" value="$(arg yaw)"/>
+        <param name="frame_id" value="$(arg frame_id)"/>
     </node>
 
     <!-- 点云降采样 -->
@@ -67,6 +79,6 @@
         <param name="floor_height_thresh" value="500.0"/>      <!-- 0.5m * 1000 -->
         <param name="table_height_min" value="500.0"/>         <!-- 0.5m * 1000 -->
         <param name="table_height_max" value="1200.0"/>        <!-- 1.2m * 1000 -->
-        <param name="min_plane_area" value="200000.0"/>        <!-- 适应缩放的最小面积 -->
+        <param name="min_plane_area" value="200.0"/>        <!-- 适应缩放的最小面积 -->
     </node>
 </launch>

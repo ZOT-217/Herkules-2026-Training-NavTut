@@ -1,5 +1,19 @@
 # Robomaster Algorithm Tutorial - Navigation Pipeline
 # 25赛季培训——导航入门
+## 一些仿真包，pcl包，tf包 etc
+```bash
+sudo apt update
+sudo apt install ros-noetic-gazebo-ros-pkgs ros-noetic-gazebo-ros-control \
+                 ros-noetic-pcl-ros ros-noetic-pcl-conversions \
+                 ros-noetic-rviz ros-noetic-tf ros-noetic-sensor-msgs \
+                 ros-noetic-velodyne-simulator
+
+```
+## 雷达可视化大概是这样子
+```bash
+roslaunch velodyne_description example.launch
+```
+
 ## 导航都干些什么
 导航模块主要负责机器人（**哨兵**）在比赛场地内的自主移动与路径规划。它需要处理以下几个关键任务：
 - **环境感知**：通过传感器（如激光雷达、摄像头等）获取周围环境的信息，构建地图。
@@ -54,6 +68,7 @@ float64 timestamp
 - 过程：将点云划分为固定大小的体素（立方体），并用每个体素内的点的质心来代表该体素，从而实现数据的压缩。
 ### 滤波
 - 目的：去除点云中的噪声和异常点，提高数据质量。
+    
 - 方法：统计离群点移除（Statistical Outlier Removal）
 - 详细过程：计算每个点与其邻近点的距离，基于统计分析移除那些距离过远的点。
 ## 分段与聚类
